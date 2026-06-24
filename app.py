@@ -158,7 +158,7 @@ with st.sidebar:
         options=[
             "Beranda",
             "Upload Data",
-            "Penyesuaian Data",
+            "Preprocessing Data",
             "Pembobotan",
             "Perangkingan",
             "Evaluasi",
@@ -176,7 +176,7 @@ with st.sidebar:
         default_index=[
             "Beranda",
             "Upload Data",
-            "Penyesuaian Data",
+            "Preprocessing Data",
             "Pembobotan",
             "Perangkingan",
             "Evaluasi",
@@ -212,7 +212,7 @@ if data_db:
         st.session_state.data = None
 else:
     st.session_state.data = None
-# LOAD Penyesuaian Data
+# LOAD Preprocessing Data
 pre = load_db("preprocess")
 if pre:
     st.session_state.data_preprocessed = pd.DataFrame(pre)
@@ -309,7 +309,7 @@ menghasilkan rekomendasi varietas benih padi. Dapat digunakan oleh penyuluh, pen
 <hr>
 <strong>Fitur dinamis yang dapat diinputkan pengguna:</strong>
 <ul>
-    <li><strong>Alternatif:</strong> Daftar varietas benih padi yang akan dibandingkan. Pengguna bisa menambah / menghapus alternatif melalui menu Penyesuaian Data.</li>
+    <li><strong>Alternatif:</strong> Daftar varietas benih padi yang akan dibandingkan. Pengguna bisa menambah / menghapus alternatif melalui menu Preprocessing Data.</li>
     <li><strong>Kriteria & Subkriteria:</strong> Tambah, hapus, atau edit kriteria (mis. produktivitas, umur panen, ketahanan penyakit, harga, kebutuhan air). Subkriteria juga didukung untuk kriteria yang kompleks.</li>
     <li><strong>Bobot AHP / Fuzzy:</strong> Pengguna dapat memasukkan matriks perbandingan berpasangan AHP atau menggunakan antarmuka fuzzy untuk menilai preferensi; sistem menghitung bobot otomatis.</li>
     <li><strong>Data Alternatif (atribut):</strong> Semua atribut numerik atau kategori untuk tiap alternatif dapat diunggah lewat CSV/Excel atau diedit langsung di tabel aplikasi.</li>
@@ -319,7 +319,7 @@ menghasilkan rekomendasi varietas benih padi. Dapat digunakan oleh penyuluh, pen
 <strong>Contoh alur dinamis:</strong>
 <ol>
     <li>Upload dataset (CSV/Excel) dengan kolom alternatif + atribut.</li>
-    <li>Pilih dan atur kriteria serta subkriteria di menu Penyesuaian Data.</li>
+    <li>Pilih dan atur kriteria serta subkriteria di menu Preprocessing Data.</li>
     <li>Masukkan atau hitung bobot (AHP / Fuzzy AHP).</li>
     <li>Jalankan TOPSIS untuk menghasilkan peringkat, lalu evaluasi hasil dengan Spearman / NDCG.</li>
     <li>Simpan konfigurasi sebagai skenario dan ekspor hasil bila perlu.</li>
@@ -343,7 +343,7 @@ menghasilkan rekomendasi varietas benih padi. Dapat digunakan oleh penyuluh, pen
         st.markdown("""
         <div class="feature">
             <div class="icon">⚙️</div>
-            <div class="title">Penyesuaian Data</div>
+            <div class="title">Preprocessing Data</div>
             <div class="desc">Pembersihan data, pemilihan kriteria, dan konfigurasi alternatif secara interaktif.</div>
         </div>
         """, unsafe_allow_html=True)
@@ -515,13 +515,13 @@ Mendukung CSV & Excel dan auto separator.
         colA,colB,colC = st.columns([6,1,2])
         with colC:
             st.markdown('<div class="blue-btn">', unsafe_allow_html=True)
-            if st.button("➡️ Penyesuaian Data"):
-                st.session_state.menu = "Penyesuaian Data"
+            if st.button("➡️ Preprocessing Data"):
+                st.session_state.menu = "Preprocessing Data"
                 st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
-# MENU PENYESUAIAN DATA
-elif selected == "Penyesuaian Data":
-    st.title("Penyesuaian Data")
+# MENU Preprocessing Data
+elif selected == "Preprocessing Data":
+    st.title("Preprocessing Data")
     df = st.session_state.data
     if df is None:
         st.warning("Upload data dulu")
@@ -530,7 +530,7 @@ elif selected == "Penyesuaian Data":
         if pre_db:
             st.session_state.data_preprocessed = pd.DataFrame(pre_db)
         if "data_preprocessed" in st.session_state:
-            st.info("📌 Menggunakan hasil Penyesuaian Data tersimpan")
+            st.info("📌 Menggunakan hasil Preprocessing Data tersimpan")
             df_preview = (st.session_state.data_preprocessed.copy())
             config_db = load_db("config")
             list_kriteria = []
@@ -787,7 +787,7 @@ elif selected == "Penyesuaian Data":
             - Agak Pulen → 2
             - Keras → 1
 
-            Silakan isi sub-kriteria pada form di bawah ini. Setelah selesai, klik **Simpan Penyesuaian Data**
+            Silakan isi sub-kriteria pada form di bawah ini. Setelah selesai, klik **Simpan Preprocessing Data**
             untuk menyimpan mapping dan melanjutkan ke tahap pembobotan.
             """, unsafe_allow_html=True)
             sub_config = {}
@@ -854,7 +854,7 @@ elif selected == "Penyesuaian Data":
                         opsi_list.append({"kategori":kategori,"nilai":nilai})
                     st.markdown("<hr style='margin:8px 0'>", unsafe_allow_html=True)
                 sub_config[k] = {"tipe":tipe,"opsi":opsi_list}
-        if st.button("💾 Simpan Penyesuaian Data"):
+        if st.button("💾 Simpan Preprocessing Data"):
             try:
                 if not kriteria:
                     st.error("❌ Kriteria belum dipilih!")
@@ -917,7 +917,7 @@ elif selected == "Penyesuaian Data":
                     kode = f"C{list(kriteria).index(k)+1}"
                     df_final[kode] = hasil
                 if df_final.empty:
-                    st.error("❌ Hasil Penyesuaian Data kosong!")
+                    st.error("❌ Hasil Preprocessing Data kosong!")
                     st.stop()
                 save_db("preprocess", df_final.to_dict())
                 save_db("config", {
@@ -928,7 +928,7 @@ elif selected == "Penyesuaian Data":
                     "mapping_kriteria": mapping_kriteria
                 })
                 st.session_state.data_preprocessed = df_final
-                st.success("✅ Penyesuaian Data berhasil disimpan! Mengalihkan ke Pembobotan...")
+                st.success("✅ Preprocessing Data berhasil disimpan! Mengalihkan ke Pembobotan...")
                 time.sleep(3)
                 st.session_state.menu = "Pembobotan"
                 st.rerun()
@@ -939,7 +939,7 @@ elif selected == "Pembobotan":
     st.title("Pembobotan Kriteria (AHP)")
     df = st.session_state.get("data_preprocessed")
     if df is None:
-        st.warning("Lakukan Penyesuaian Data dulu")
+        st.warning("Lakukan Preprocessing Data dulu")
     else:
         kriteria = [col for col in df.columns if col != "Alternatif"]
         kriteria = sorted(kriteria, key=lambda x: int(x.replace("C","")))
@@ -2053,7 +2053,7 @@ elif selected == "Perangkingan":
         st.subheader("1️⃣ Matriks Keputusan")
         st.markdown("""
         **Penjelasan:**
-        Matriks keputusan data berisi nilai setiap alternatif terhadap setiap kriteria yang sudah di-Penyesuaian Data.
+        Matriks keputusan data berisi nilai setiap alternatif terhadap setiap kriteria yang sudah di-Preprocessing Data.
 
         **Tujuan:**
         Menjadi dasar perhitungan TOPSIS.
@@ -2787,7 +2787,7 @@ elif selected == "Perangkingan":
 elif selected == "Panduan Input":
     st.title("📘 Panduan Input — Langkah demi Langkah")
     st.markdown("""
-    Halaman ini memberi panduan lengkap tentang apa yang harus disiapkan saat upload data, dari format file hingga tips singkat untuk Penyesuaian Data dan pembobotan.
+    Halaman ini memberi panduan lengkap tentang apa yang harus disiapkan saat upload data, dari format file hingga tips singkat untuk Preprocessing Data dan pembobotan.
     """, unsafe_allow_html=True)
     example_df = pd.DataFrame({"Alternatif": ["Var_A","Var_B","Var_C"],"Produktivitas": [9, 7, 5],"Harga": [1200, 1000, 1500],"Ketahanan": ["Tinggi","Sedang","Rendah"]})
     with st.expander("📥 Panduan Upload Data", expanded=False):
@@ -2830,14 +2830,14 @@ elif selected == "Panduan Input":
                     st.caption("Preview hanya untuk demo — file ini tidak disimpan ke database oleh uploader demo.")   
                 except Exception as e:
                     st.error(f"Gagal membaca file demo: {e}")
-    # Panduan Penyesuaian Data
-    with st.expander("🛠️ Panduan Penyesuaian Data", expanded=False):
+    # Panduan Preprocessing Data
+    with st.expander("🛠️ Panduan Preprocessing Data", expanded=False):
         st.markdown("""
-        Ringkasan Penyesuaian Data (singkat): gunakan kontrol di bawah untuk menyiapkan data.
+        Ringkasan Preprocessing Data (singkat): gunakan kontrol di bawah untuk menyiapkan data.
         """, unsafe_allow_html=True)
         st.markdown("""
         ### Demo Interaktif (Contoh)
-        Anda dapat mencoba langkah-langkah Penyesuaian Data pada contoh data berikut. Pilih fitur untuk di-drop, pilih kriteria, tentukan alternatif, lalu buat mapping sub-kriteria.
+        Anda dapat mencoba langkah-langkah Preprocessing Data pada contoh data berikut. Pilih fitur untuk di-drop, pilih kriteria, tentukan alternatif, lalu buat mapping sub-kriteria.
         Setelah mengatur mapping, lihat preview hasil konversi (C1..Cn) di bawah.
         """, unsafe_allow_html=True)
         demo_df = example_df.copy()
@@ -2864,7 +2864,7 @@ elif selected == "Panduan Input":
                 quick_col_type = st.selectbox("Tipe", ["Numerik", "String"], index=0, key="demo_quick_col_type")
             if st.button("➕ Tambahkan Kolom (demo)", key="demo_add_col_btn"):
                 st.info(f"Kolom '{quick_col_name}' ditambahkan ke preview (demo). Ini tidak menyimpan ke database.")
-            st.caption("Tambahkan/hapus/ganti nama kolom pada preview (demo). Gunakan ini untuk mencoba format kolom sebelum menyimpan di Penyesuaian Data asli.")
+            st.caption("Tambahkan/hapus/ganti nama kolom pada preview (demo). Gunakan ini untuk mencoba format kolom sebelum menyimpan di Preprocessing Data asli.")
             cols_removable = [c for c in demo_df.columns]
             sel_remove = st.multiselect("Pilih kolom untuk dihapus dari preview (demo)", cols_removable, key="demo_sel_remove")
             if st.button("🗑️ Hapus Kolom (demo)", key="demo_remove_col_btn"):
@@ -2883,7 +2883,7 @@ elif selected == "Panduan Input":
                     st.error("❌ Nama kolom baru sudah ada (duplikat)")
                 else:
                     st.info(f"Kolom '{col_to_rename}' diganti menjadi '{new_col_name}' di preview (demo). Ini tidak menyimpan ke database.")
-            st.caption("Ganti nama kolom di preview untuk memastikan struktur data sebelum menyimpan di Penyesuaian Data utama.")
+            st.caption("Ganti nama kolom di preview untuk memastikan struktur data sebelum menyimpan di Preprocessing Data utama.")
         st.markdown("""
         <div style='display:flex; gap:16px; margin-top:12px'>
             <div style='background:#e6f2ff; padding:12px; border-radius:8px; flex:1'>Jumlah Baris: <strong>{rows}</strong></div>
@@ -2892,8 +2892,8 @@ elif selected == "Panduan Input":
         """.format(rows=len(demo_df), cols=len(demo_df.columns)), unsafe_allow_html=True)
         st.markdown("**Penjelasan (demo):** Klik tombol ini untuk mensimulasikan menyimpan perubahan pada tabel. Ini hanya demo dan tidak akan mengubah database aplikasi.")
         if st.button("💾 Simpan Perubahan Data (demo)", key="demo_save_btn"):
-            st.success("✅ Simulasi simpan selesai. Untuk menyimpan nyata, gunakan halaman Penyesuaian Data dan klik 'Simpan Perubahan Data'.")
-        st.caption("Simpan Perubahan Data (demo) hanya simulasi. Untuk menyimpan permanen, gunakan halaman Penyesuaian Data dan tombol Simpan.")
+            st.success("✅ Simulasi simpan selesai. Untuk menyimpan nyata, gunakan halaman Preprocessing Data dan klik 'Simpan Perubahan Data'.")
+        st.caption("Simpan Perubahan Data (demo) hanya simulasi. Untuk menyimpan permanen, gunakan halaman Preprocessing Data dan tombol Simpan.")
         st.markdown("---")
         auto_preview = st.checkbox("Tampilkan preview otomatis", value=True, key="demo_auto_preview")
         st.caption("Centang untuk melihat preview konversi (C1..Cn) secara otomatis saat Anda mengubah mapping sub-kriteria.")
