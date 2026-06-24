@@ -212,7 +212,7 @@ if data_db:
         st.session_state.data = None
 else:
     st.session_state.data = None
-# LOAD Preprocessing Data
+# LOAD PREPROCESSING DATA
 pre = load_db("preprocess")
 if pre:
     st.session_state.data_preprocessed = pd.DataFrame(pre)
@@ -519,7 +519,7 @@ Mendukung CSV & Excel dan auto separator.
                 st.session_state.menu = "Preprocessing Data"
                 st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
-# MENU Preprocessing Data
+# MENU PREPROCESSING DATA
 elif selected == "Preprocessing Data":
     st.title("Preprocessing Data")
     df = st.session_state.data
@@ -2830,7 +2830,7 @@ elif selected == "Panduan Input":
                     st.caption("Preview hanya untuk demo — file ini tidak disimpan ke database oleh uploader demo.")   
                 except Exception as e:
                     st.error(f"Gagal membaca file demo: {e}")
-    # Panduan Preprocessing Data
+    # Panduan PREPROCESSING DATA
     with st.expander("🛠️ Panduan Preprocessing Data", expanded=False):
         st.markdown("""
         Ringkasan Preprocessing Data (singkat): gunakan kontrol di bawah untuk menyiapkan data.
